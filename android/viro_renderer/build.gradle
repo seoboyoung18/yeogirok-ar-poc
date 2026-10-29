@@ -1,0 +1,24 @@
+// Publish Viro's renderer with its bundled ARCore C client removed.
+// The app supplies Java, JNI and C clients together via com.google.ar:core.
+// Keep node_modules untouched so npm ci reproduces the same dependency graph.
+plugins {
+    id 'base'
+}
+
+def rendererAar = rootProject.file('../node_modules/@reactvision/react-viro/android/viro_renderer/viro_renderer-release.aar')
+
+def prepareRenderer = tasks.register('prepareRenderer', Zip) {
+    inputs.file(rendererAar)
+    from(zipTree(rendererAar)) {
+        exclude 'jni/**/libarcore_sdk_c.so'
+    }
+    archiveExtension = 'aar'
+    archiveFileName = 'viro_renderer-release.aar'
+    destinationDirectory = layout.buildDirectory.dir('outputs/aar')
+    includeEmptyDirs = false
+}
+
+configurations.maybeCreate('default')
+artifacts.add('default', prepareRenderer) {
+    type = 'aar'
+}

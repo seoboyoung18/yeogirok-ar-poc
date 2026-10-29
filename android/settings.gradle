@@ -1,0 +1,12 @@
+pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
+plugins { id("com.facebook.react.settings") }
+extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+rootProject.name = 'YeogirokArPoc'
+include ':app'
+includeBuild('../node_modules/@react-native/gradle-plugin')
+include ':react_viro', ':gvr_common', ':viro_renderer'
+
+project(':gvr_common').projectDir = new File('../node_modules/@reactvision/react-viro/android/gvr_common')
+// Repackage Viro without its bundled ARCore C library; use the official SDK copy.
+project(':viro_renderer').projectDir = new File(rootDir, 'viro_renderer')
+project(':react_viro').projectDir = new File('../node_modules/@reactvision/react-viro/android/react_viro')
